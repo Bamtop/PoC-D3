@@ -1,5 +1,5 @@
 <template>
-  <h1>Hola, pablo</h1>
+ 
   <div id="app">
     <D3 />
   </div>

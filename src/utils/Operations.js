@@ -36,3 +36,7 @@ export const getPath = (
     `T ${endPointX} ${endPointY}`
   );
 };
+
+export const getPathWithoutCurve = (firstPointX, firstPointY, endPointX) => {
+  return `M ${firstPointX} ${firstPointY} L ${endPointX} ${firstPointY}`;
+};
