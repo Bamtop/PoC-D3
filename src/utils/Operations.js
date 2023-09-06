@@ -41,7 +41,7 @@ export const getPathWithoutCurve = (firstPointX, firstPointY, endPointX) => {
   return `M ${firstPointX} ${firstPointY} L ${endPointX} ${firstPointY}`;
 };
 
-export const getPercentage = (value1,total) => {
-  const result =(value1 * 100) / total;
+export const getPercentage = (value1, total) => {
+  const result = (value1 * 100) / total;
   return result.toFixed(0);
-}
+};
