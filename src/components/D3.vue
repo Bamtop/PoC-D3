@@ -1,14 +1,14 @@
 <script setup>
 import * as d3 from "d3";
 import { ref, onMounted } from "vue";
-import { getPath, getPathWithoutCurve } from "../utils";
+import { getPath, getPathWithoutCurve, getPercentage } from "../utils";
 
 const prueba = ref();
 const prueba2 = ref();
 const rowGap = 700;
 const radio = 50;
 const columGap = 150;
-const firstChildCenter = 50;
+const firstChildCenter = 200;
 const startPathX = 200;
 const startPathY = 500;
 const endPathX = rowGap;
@@ -38,7 +38,35 @@ onMounted(() => {
     .append("svg")
     .attr("class", "svg")
     .attr("width", 1500)
-    .attr("height", 1500);
+    .attr("height", 1500)
+
+    svg
+    .append("foreignObject")
+    .attr("x",550)
+    .attr("y", 0)
+    .attr("width", 300)
+    .attr("height", 1200)
+    .html(
+      `<div style="display:flex;flex-direction:column; align-items:center;width: 100%; height: 100%;background-color:#406AFF0D;border-radius:25%;padding-top:25px;color:#69696980">
+          <span style="font-size:20px;font-family:Inter;font-weight:700;">COVERAGE</span>
+          <span style="font-size:12px;font-family:Inter;font-weight:700;">COOKIES WRAPPED UP BY CMP</span>
+          <span style="font-size:40px;margin-top:15px;font-family:Inter;font-weight:700;">94%</span>
+        </div>`
+    );
+
+    svg
+    .append("foreignObject")
+    .attr("x",950)
+    .attr("y", 0)
+    .attr("width", 400)
+    .attr("height", 1050)
+    .html(
+      `<div style="display:flex;flex-direction:column; align-items:center;width: 100%; height: 100%;background-color:#406AFF0D;border-radius:25%;padding-top:25px;color:#69696980">
+          <span style="font-size:20px;font-family:Inter;font-weight:700;">PRECISION</span>
+          <span style="font-size:12px;font-family:Inter;font-weight:700;">COOKIES CATEGORY ASSIGNMENT ACCURACY</span>
+          <span style="font-size:40px;margin-top:15px;font-family:Inter;font-weight:700;">75%</span>
+        </div>`
+    );
 
   const createPath = (color, opacity, width, path) => {
     svg
@@ -95,6 +123,9 @@ onMounted(() => {
     const color = d3.scaleOrdinal().range(["#FF4040", "#406AFF"]);
     const pie = d3.pie().value((d) => d[1]);
     const data_ready = pie(Object.entries(data));
+    const total = data.a + data.b;
+    const percentageA = getPercentage(data.a, total);
+    const percentageB = getPercentage(data.b, total);
 
     donutGroup
       .selectAll("whatever")
@@ -103,6 +134,76 @@ onMounted(() => {
       .attr("d", d3.arc().innerRadius(12).outerRadius(radius))
       .attr("fill", (d) => color(d.data[0]))
       .style("opacity", 1);
+
+      if(data.a!=0 && data.b!=0 ){
+
+    donutGroup
+      .append("foreignObject") // Usar foreignObject en lugar de text
+      .attr("x", 70) // Ajustar la posición x según sea necesario
+      .attr("y", -40) // Ajustar la posición y según sea necesario
+      .attr("width", radio * 5) // Ancho igual al diámetro del círculo
+      .attr("height", radio *2) // Alto igual al diámetro del círculo
+      .html(
+        `<div style="width: 100%; display: flex; flex-direction:column; justify-content: center; align-items:center;  font-size: ${fontSize}px; color: black;">
+          <div style="width: 100%; height: 100%; display: flex;  align-items:center; gap:8px">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="9" cy="9" r="9" fill="#406AFF"/>
+            </svg>
+            <p>Correctly Assigned</p>
+            <p><b>${data.b}</b> (${percentageB}%)</p>
+
+          </div>
+          <div style="width: 100%; height: 100%; display: flex;  align-items:center; gap:8px">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="9" fill="#FF4040"/>
+            </svg>
+            <p>Incorrectly Assigned
+              <br> 
+              or served without consent</p>
+            <p style="align-self: baseline;"><b>${data.a}</b> (${percentageA}%)</p>
+          </div>
+        </div>`
+      );
+      }else if(data.a==0 && data.b!=0){
+        donutGroup
+      .append("foreignObject") // Usar foreignObject en lugar de text
+      .attr("x", 70) // Ajustar la posición x según sea necesario
+      .attr("y", -40) // Ajustar la posición y según sea necesario
+      .attr("width", radio * 5) // Ancho igual al diámetro del círculo
+      .attr("height", radio *2) // Alto igual al diámetro del círculo
+      .html(
+        `<div style="width: 100%; display: flex; flex-direction:column; justify-content: center; align-items:center;  font-size: ${fontSize}px; color: black;">
+          <div style="width: 100%; height: 100%; display: flex;  align-items:center; gap:8px">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="9" cy="9" r="9" fill="#406AFF"/>
+            </svg>
+            <p>Correctly Assigned</p>
+            <p><b>${data.b}</b> (${percentageB}%)</p>
+          </div>
+        </div>`
+      );
+
+      }else if(data.a!=0 && data.b==0){
+        donutGroup
+      .append("foreignObject") // Usar foreignObject en lugar de text
+      .attr("x", 70) // Ajustar la posición x según sea necesario
+      .attr("y", -40) // Ajustar la posición y según sea necesario
+      .attr("width", radio * 5) // Ancho igual al diámetro del círculo
+      .attr("height", radio *2) // Alto igual al diámetro del círculo
+      .html(
+        `<div style="width: 100%; display: flex; flex-direction:column; justify-content: center; align-items:center;  font-size: ${fontSize}px; color: black;">
+          <div style="width: 100%; height: 100%; display: flex;  align-items:center; gap:8px">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="9" fill="#FF4040"/>
+            </svg>
+            <p>Incorrectly Assigned
+              <br> 
+              or served without consent</p>
+            <p style="align-self: baseline;"><b>${data.a}</b> (${percentageA}%)</p>
+          </div>
+        </div>`
+      );
+      }
   };
 
   createPath(
